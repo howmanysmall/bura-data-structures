@@ -1,0 +1,6 @@
+{
+  "name": "auto-building-project",
+  "tree": {
+    "$path": "src"
+  }
+}

@@ -1,0 +1,13 @@
+[package]
+authors = ["HowManySmall <howmanysmall@gmail.com>"]
+exclude = ["**"]
+include = ["src", "src/**", "wally.toml", "wally.lock", "default.project.json", "LICENSE"]
+name = "bura-games/auto-building-project"
+private = true
+realm = "shared"
+registry = "https://github.com/UpliftGames/wally-index"
+version = "0.1.0"
+
+[dependencies]
+
+[dev-dependencies]

@@ -1,0 +1,4 @@
+{
+	"name": "auto-building-project-build",
+	"tree": {"$path": "./default.project.json"}
+}

@@ -1,0 +1,20 @@
+autoSectionPath = "src"
+changelog = false
+gitSourceBranch = "main"
+title = "AutoBuildingProject"
+
+[docusaurus]
+tagline = "A Roblox library template that will automatically build and release itself."
+
+# [[navbar.items]]
+
+[home]
+enabled = true
+includeReadme = false
+
+# [[home.features]]
+# title = "Proper Documentation"
+# description = "We have documentation now, as you can probably see."
+
+[footer]
+copyright = "Copyright © 2024 Bura Games. Made with Moonwave."
