@@ -1,10 +1,10 @@
 autoSectionPath = "src"
-changelog = false
+changelog = true
 gitSourceBranch = "main"
-title = "AutoBuildingProject"
+title = "Data Structures"
 
 [docusaurus]
-tagline = "A Roblox library template that will automatically build and release itself."
+tagline = "A collection of data structures aimed specifically at Roblox game development."
 
 # [[navbar.items]]
 
@@ -12,9 +12,21 @@ tagline = "A Roblox library template that will automatically build and release i
 enabled = true
 includeReadme = false
 
-# [[home.features]]
-# title = "Proper Documentation"
-# description = "We have documentation now, as you can probably see."
+[[home.features]]
+description = "These data structures are designed to be as fast as possible, so that way your bottleneck should never be the library."
+title = "High Performance"
+
+[[home.features]]
+description = "The data structures here are documented so that way there is never any confusion."
+title = "Documentation"
+
+[[home.features]]
+description = "Since Luau is a typed language, these data structures are typed so that you will reduce the amount of bugs caused by type errors."
+title = "Strict Typing"
+
+[[home.features]]
+description = "For added protections against mistakes, you can enable the global ultra strict mode flag to get more errors."
+title = "Ultra Strict Mode"
 
 [footer]
 copyright = "Copyright © 2024 Bura Games. Made with Moonwave."

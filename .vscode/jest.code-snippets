@@ -1,0 +1,22 @@
+{
+	"Unit Test": {
+		"body": [
+			"--!optimize 2",
+			"--!strict",
+			"",
+			"local TestService = game:GetService(\"TestService\")",
+			"local JestGlobals = require(TestService.UnitTesting.DevPackages.JestGlobals)",
+			"",
+			"local describe = JestGlobals.describe",
+			"local expect = JestGlobals.expect",
+			"local it = JestGlobals.it",
+			"",
+			"return false",
+			"",
+		],
+		"description": "A base unit test.",
+		"isFileTemplate": true,
+		"prefix": ["jest", "unittest", "unit-test"],
+		"scope": "luau",
+	},
+}

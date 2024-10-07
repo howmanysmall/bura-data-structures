@@ -1,6 +1,7 @@
 {
 	"aliases": {
 		"classes": ".lune/Classes",
+		"contexts": ".lune/Contexts",
 		"packages": ".lune/Packages",
 		"utilities": ".lune/Utilities"
 	},

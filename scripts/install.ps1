@@ -18,7 +18,7 @@ if (-Not (Test-Path -Path "DevPackages" -PathType Container)) {
 }
 
 # Sourcemap generation
-rojo sourcemap --output sourcemap.json place.project.json
+rojo sourcemap --output sourcemap.json test.project.json
 
 # Fix the types (why is this not native???)
 wally-package-types --sourcemap sourcemap.json Packages/

@@ -3,6 +3,7 @@
 	"luau-lsp.require.directoryAliases": {
 		"@lune/": "~/.lune/.typedefs/0.8.8/",
 		"@classes/": ".lune/Classes/",
+		"@contexts/": ".lune/Contexts/",
 		"@packages/": ".lune/Packages/",
 		"@utilities/": ".lune/Utilities/",
 	},
@@ -14,8 +15,8 @@
 		"**/_Index/**",
 		"**/benchmarks/**",
 	],
+	"luau-lsp.sourcemap.rojoProjectFile": "test.project.json",
 	"roblox-ui.explorer.showDataModel": true,
 	"roblox-ui.explorer.showFilePaths": true,
-	"roblox-ui.sourcemap.rojoProjectFile": "place.project.json",
 	// "luau-lsp.types.definitionFiles": [],
 }

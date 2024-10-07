@@ -29,22 +29,22 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Build Model Files
-        run: lunar build-release AutoBuildingProject -i -s
+        run: lunar build-release DataStructures -i -s
 
       - name: Upload to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ github.ref_name }} AutoBuildingProject.rbxm AutoBuildingProject.rbxmx
+          gh release upload ${{ github.ref_name }} DataStructures.rbxm DataStructures.rbxmx
 
       - name: Upload Binary to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: AutoBuildingProject.rbxm
-          path: AutoBuildingProject.rbxm
+          name: DataStructures.rbxm
+          path: DataStructures.rbxm
 
       - name: Upload XML to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: AutoBuildingProject.rbxmx
-          path: AutoBuildingProject.rbxmx
+          name: DataStructures.rbxmx
+          path: DataStructures.rbxmx

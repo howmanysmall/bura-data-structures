@@ -1,0 +1,25 @@
+{
+	"name": "data-structures-test-place",
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"$ignoreUnknownInstances": true,
+			"Packages": {
+				"$ignoreUnknownInstances": true,
+				"$path": "Packages",
+				"DataStructures": {"$path": "./default.project.json"}
+			}
+		},
+		"TestService": {
+			"$className": "TestService",
+			"$ignoreUnknownInstances": true,
+			"$properties": {"ExecuteWithStudioRun": true},
+			"UnitTesting": {
+				"$ignoreUnknownInstances": true,
+				"$path": "tests",
+				"DevPackages": {"$path": "DevPackages"}
+			}
+		}
+	}
+}

@@ -1,23 +1,19 @@
-<h1 align="center">Welcome to auto-building-project 👋</h1>
+<h1 align="center">Welcome to data-structures 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
+  <a href="https://www.npmjs.com/package/data-structures" target="_blank">
+    <img alt="Version" src="https://img.shields.io/npm/v/data-structures.svg">
+  </a>
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
 </p>
 
-> A starting template project to create an automatically building Roblox library.
-
-## Install
-
-```sh
-scripts/install.sh
-```
+> A collection of data structures aimed specifically at Roblox game development.
 
 ## Usage
 
 ```sh
-lunar create-github-release-tag
+wally install
 ```
 
 ## Author

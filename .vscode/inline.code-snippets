@@ -1,0 +1,20 @@
+{
+	"IsUltraStrictMode": {
+		"body": [
+			"local cached: boolean = nil",
+			"local function IsUltraStrictMode(): boolean",
+			"\tif cached ~= nil then",
+			"\t\treturn cached",
+			"\tend",
+			"",
+			"\tlocal isUltraStrictMode = not not _G.__DEV__",
+			"\tcached = isUltraStrictMode",
+			"\treturn isUltraStrictMode",
+			"end",
+			"",
+		],
+		"description": "Creates the function for IsUltraStrictMode.",
+		"prefix": ["createisultrastrictmode"],
+		"scope": "luau",
+	},
+}

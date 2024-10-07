@@ -1,5 +1,5 @@
 {
-	"name": "auto-building-project-place",
+	"name": "data-structures-place",
 	"tree": {
 		"$className": "DataModel",
 		"ReplicatedStorage": {
@@ -8,10 +8,7 @@
 			"Packages": {
 				"$ignoreUnknownInstances": true,
 				"$path": "Packages",
-				"AutoBuildingProject": {"$path": "./default.project.json"}
-			},
-			"DevPackages": {
-				"$path": "DevPackages"
+				"DataStructures": {"$path": "./default.project.json"}
 			}
 		}
 	}
