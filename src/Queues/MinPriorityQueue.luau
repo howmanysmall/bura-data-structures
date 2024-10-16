@@ -10,50 +10,50 @@ local Types = require(script.Parent.Parent.Types)
 type ComparisonFunction<T> = Types.ComparisonFunction<T>
 type HeapEntry<T> = Types.HeapEntry<T>
 
-export type MaxPriorityQueue<T> = typeof(setmetatable(
+export type MinPriorityQueue<T> = typeof(setmetatable(
 	{} :: {
 		Array: {HeapEntry<T>},
 		Length: number,
 
-		InsertWithPriority: (self: MaxPriorityQueue<T>, value: T, priority: number) -> number,
-		Insert: (self: MaxPriorityQueue<T>, value: T, priority: number) -> number,
+		InsertWithPriority: (self: MinPriorityQueue<T>, value: T, priority: number) -> number,
+		Insert: (self: MinPriorityQueue<T>, value: T, priority: number) -> number,
 
 		ChangePriority: (
-			self: MaxPriorityQueue<T>,
+			self: MinPriorityQueue<T>,
 			value: T,
 			newPriority: number,
 			equalityCheck: ComparisonFunction<T>?
 		) -> number,
 
-		RemovePriority: (self: MaxPriorityQueue<T>, priority: number) -> (),
-		RemoveValue: (self: MaxPriorityQueue<T>, value: T, equalityCheck: ComparisonFunction<T>?) -> (),
+		RemovePriority: (self: MinPriorityQueue<T>, priority: number) -> (),
+		RemoveValue: (self: MinPriorityQueue<T>, value: T, equalityCheck: ComparisonFunction<T>?) -> (),
 
-		GetFirstPriority: (self: MaxPriorityQueue<T>) -> number?,
-		GetLastPriority: (self: MaxPriorityQueue<T>) -> number?,
+		GetFirstPriority: (self: MinPriorityQueue<T>) -> number?,
+		GetLastPriority: (self: MinPriorityQueue<T>) -> number?,
 
-		PopElement: ((self: MaxPriorityQueue<T>, onlyValue: true) -> T?)
-			& ((self: MaxPriorityQueue<T>, onlyValue: false?) -> HeapEntry<T>?)
-			& ((self: MaxPriorityQueue<T>, onlyValue: nil) -> HeapEntry<T>?),
+		PopElement: ((self: MinPriorityQueue<T>, onlyValue: true) -> T?)
+			& ((self: MinPriorityQueue<T>, onlyValue: false?) -> HeapEntry<T>?)
+			& ((self: MinPriorityQueue<T>, onlyValue: nil) -> HeapEntry<T>?),
 
-		Clear: (self: MaxPriorityQueue<T>) -> MaxPriorityQueue<T>,
+		Clear: (self: MinPriorityQueue<T>) -> MinPriorityQueue<T>,
 
-		Contains: (self: MaxPriorityQueue<T>, value: T, equalityCheck: ComparisonFunction<T>?) -> boolean,
+		Contains: (self: MinPriorityQueue<T>, value: T, equalityCheck: ComparisonFunction<T>?) -> boolean,
 	},
 	{} :: {
-		__len: (self: MaxPriorityQueue<T>) -> number,
-		__tostring: (self: MaxPriorityQueue<T>) -> string,
+		__len: (self: MinPriorityQueue<T>) -> number,
+		__tostring: (self: MinPriorityQueue<T>) -> string,
 	}
 ))
 
 type Static = {
-	ClassName: "MaxPriorityQueue",
-	new: <T>() -> MaxPriorityQueue<T>,
+	ClassName: "MinPriorityQueue",
+	new: <T>() -> MinPriorityQueue<T>,
 	Is: (value: any) -> boolean,
 	instanceof: (value: any) -> boolean,
 }
 type PrivateStatic = Static & {
-	__len: (self: MaxPriorityQueue<any>) -> number,
-	__tostring: (self: MaxPriorityQueue<any>) -> string,
+	__len: (self: MinPriorityQueue<any>) -> number,
+	__tostring: (self: MinPriorityQueue<any>) -> string,
 }
 
 local cached: boolean = nil
@@ -73,8 +73,9 @@ local IsNumber = GreenTea.build(GreenTea.number())
 local IsUnknown = GreenTea.build(GreenTea.unknown())
 
 --[=[
-	In a max priority queue, elements are inserted by the priority in ascending
-	order and the maximum value is always removed first from the queue.
+	In a min priority queue, elements are inserted by the priority in
+	descending order and the maximum value is always removed first from the
+	queue.
 
 	This uses a sorted array internally for the maximum speed possible when
 	inserting, popping, and removing by priority.
@@ -82,27 +83,27 @@ local IsUnknown = GreenTea.build(GreenTea.unknown())
 	@tag Supports Debug Mode
 	@tag Supports __len
 	@tag Supports __tostring
-	@class MaxPriorityQueue
+	@class MinPriorityQueue
 ]=]
-local MaxPriorityQueue = {} :: MaxPriorityQueue<any> & Static
-local Private = MaxPriorityQueue :: MaxPriorityQueue<any> & PrivateStatic
-MaxPriorityQueue.ClassName = "MaxPriorityQueue";
-(MaxPriorityQueue :: any).__index = MaxPriorityQueue
+local MinPriorityQueue = {} :: MinPriorityQueue<any> & Static
+local Private = MinPriorityQueue :: MinPriorityQueue<any> & PrivateStatic
+MinPriorityQueue.ClassName = "MinPriorityQueue";
+(MinPriorityQueue :: any).__index = MinPriorityQueue
 
 --[=[
 	An element with all your elements. This is technically a sorted array.
 
 	@readonly
 	@prop Array ReadonlyArray<HeapEntry<T>>
-	@within MaxPriorityQueue
+	@within MinPriorityQueue
 ]=]
 
 --[=[
-	The length of the `MaxPriorityQueue`.
+	The length of the `MinPriorityQueue`.
 
 	@readonly
 	@prop Length integer
-	@within MaxPriorityQueue
+	@within MinPriorityQueue
 ]=]
 
 local function FindClosest<T>(array: {HeapEntry<T>}, priority: number, low: number, high: number)
@@ -118,7 +119,7 @@ local function FindClosest<T>(array: {HeapEntry<T>}, priority: number, low: numb
 			return middle
 		end
 
-		if priority < priority2 then
+		if priority > priority2 then
 			high = middle - 1
 		else
 			low = middle + 1
@@ -132,58 +133,58 @@ local function FindClosest<T>(array: {HeapEntry<T>}, priority: number, low: numb
 end
 
 --[=[
-	Creates a new MaxPriorityQueue.
-	@return MaxPriorityQueue<T>
+	Creates a new MinPriorityQueue.
+	@return MinPriorityQueue<T>
 ]=]
-function MaxPriorityQueue.new<T>(): MaxPriorityQueue<T>
+function MinPriorityQueue.new<T>(): MinPriorityQueue<T>
 	return setmetatable({
 		Array = {};
 		Length = 0;
-	}, MaxPriorityQueue) :: never
+	}, MinPriorityQueue) :: never
 end
 
 --[=[
-	Checks if `value` is literally a `MaxPriorityQueue`.
+	Checks if `value` is literally a `MinPriorityQueue`.
 
 	```lua
-	MaxPriorityQueue.Is(MaxPriorityQueue.new()) -- true
-	MaxPriorityQueue.Is(MaxPriorityQueue) -- false
-	MaxPriorityQueue.Is({}) -- false
-	MaxPriorityQueue.Is(nil) -- false
-	MaxPriorityQueue.Is(1) -- false
+	MinPriorityQueue.Is(MinPriorityQueue.new()) -- true
+	MinPriorityQueue.Is(MinPriorityQueue) -- false
+	MinPriorityQueue.Is({}) -- false
+	MinPriorityQueue.Is(nil) -- false
+	MinPriorityQueue.Is(1) -- false
 	```
 
 	@param value unknown
 	@return boolean
 ]=]
-function MaxPriorityQueue.Is(value)
-	return type(value) == "table" and getmetatable(value) == MaxPriorityQueue
+function MinPriorityQueue.Is(value)
+	return type(value) == "table" and getmetatable(value) == MinPriorityQueue
 end
 --[=[
-	An alias for [MaxPriorityQueue.Is].
+	An alias for [MinPriorityQueue.Is].
 
 	@function instanceof
-	@within MaxPriorityQueue
+	@within MinPriorityQueue
 
 	@param value unknown
 	@return boolean
 ]=]
-MaxPriorityQueue.instanceof = MaxPriorityQueue.Is
+MinPriorityQueue.instanceof = MinPriorityQueue.Is
 
-local function Insert<T>(self: MaxPriorityQueue<T>, value: T, priority: number)
+local function Insert<T>(self: MinPriorityQueue<T>, value: T, priority: number)
 	if IsUltraStrictMode() then
 		local typeSuccess0, typeError0 = IsUnknown:matches(value)
 		if not typeSuccess0 then
 			local exception = Error.new(tostring(typeError0))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.Insert)
+			Error.captureStackTrace(exception, MinPriorityQueue.Insert)
 			error(exception)
 		end
 		local typeSuccess1, typeError1 = IsNumber:matches(priority)
 		if not typeSuccess1 then
 			local exception = Error.new(tostring(typeError1))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.Insert)
+			Error.captureStackTrace(exception, MinPriorityQueue.Insert)
 			error(exception)
 		end
 	end
@@ -200,7 +201,7 @@ local function Insert<T>(self: MaxPriorityQueue<T>, value: T, priority: number)
 
 	local element = array[position]
 	if element then
-		position = if priority < element.Priority then position else position + 1
+		position = if priority > element.Priority then position else position + 1
 	else
 		position = 1
 	end
@@ -211,32 +212,32 @@ local function Insert<T>(self: MaxPriorityQueue<T>, value: T, priority: number)
 end
 
 --[=[
-	Adds an element to the `MaxPriorityQueue` with an associated priority.
+	Adds an element to the `MinPriorityQueue` with an associated priority.
 
 	@method Insert
-	@within MaxPriorityQueue
+	@within MinPriorityQueue
 
 	@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
 
 	@param value T -- The value to insert.
 	@param priority number -- The priority of the value.
-	@return integer -- The index of the element in the `MaxPriorityQueue`.
+	@return integer -- The index of the element in the `MinPriorityQueue`.
 ]=]
-MaxPriorityQueue.Insert = Insert
+MinPriorityQueue.Insert = Insert
 --[=[
-	An alias for [MaxPriorityQueue.Insert].
+	An alias for [MinPriorityQueue.Insert].
 
 	@method InsertWithPriority
-	@within MaxPriorityQueue
+	@within MinPriorityQueue
 
 	@param value T -- The value to insert.
 	@param priority number -- The priority of the value.
-	@return integer -- The index of the element in the `MaxPriorityQueue`.
+	@return integer -- The index of the element in the `MinPriorityQueue`.
 ]=]
-MaxPriorityQueue.InsertWithPriority = Insert
+MinPriorityQueue.InsertWithPriority = Insert
 
 --[=[
-	Allows you to change the priority of an element in the `MaxPriorityQueue`.
+	Allows you to change the priority of an element in the `MinPriorityQueue`.
 
 	:::info Time Complexity
 	This function has kind of a funky time complexity on account of it treating
@@ -249,29 +250,29 @@ MaxPriorityQueue.InsertWithPriority = Insert
 	@param value T -- The value to change the priority of.
 	@param newPriority number -- The new priority of the value.
 	@param equalityCheck? ComparisonFunction<T> -- The function used to check if two values are equal. If unprovided, we'll default to `==`.
-	@return integer -- The index of the element in the `MaxPriorityQueue`.
+	@return integer -- The index of the element in the `MinPriorityQueue`.
 ]=]
-function MaxPriorityQueue:ChangePriority<T>(value: T, newPriority, equalityCheck: ComparisonFunction<T>?)
+function MinPriorityQueue:ChangePriority<T>(value: T, newPriority, equalityCheck: ComparisonFunction<T>?)
 	if IsUltraStrictMode() then
 		local typeSuccess0, typeError0 = IsUnknown:matches(value)
 		if not typeSuccess0 then
 			local exception = Error.new(tostring(typeError0))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.ChangePriority)
+			Error.captureStackTrace(exception, MinPriorityQueue.ChangePriority)
 			error(exception)
 		end
 		local typeSuccess1, typeError1 = IsNumber:matches(newPriority)
 		if not typeSuccess1 then
 			local exception = Error.new(tostring(typeError1))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.ChangePriority)
+			Error.captureStackTrace(exception, MinPriorityQueue.ChangePriority)
 			error(exception)
 		end
 		local typeSuccess2, typeError2 = IsMaybeFunction:matches(equalityCheck)
 		if not typeSuccess2 then
 			local exception = Error.new(tostring(typeError2))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.ChangePriority)
+			Error.captureStackTrace(exception, MinPriorityQueue.ChangePriority)
 			error(exception)
 		end
 	end
@@ -297,31 +298,31 @@ function MaxPriorityQueue:ChangePriority<T>(value: T, newPriority, equalityCheck
 
 	local exception = Error.new("Couldn't find value in the queue?")
 	exception.name = "ValueNotFoundError"
-	Error.captureStackTrace(exception, MaxPriorityQueue.ChangePriority)
+	Error.captureStackTrace(exception, MinPriorityQueue.ChangePriority)
 	error(exception)
 end
 
 --[=[
-	Gets the priority of the first value in the `MaxPriorityQueue`. This is the
+	Gets the priority of the first value in the `MinPriorityQueue`. This is the
 	value that will be removed last.
 	@return number?
 ]=]
-function MaxPriorityQueue:GetFirstPriority()
+function MinPriorityQueue:GetFirstPriority()
 	return if self.Length == 0 then nil else self.Array[1].Priority
 end
 
 --[=[
-	Gets the priority of the last value in the `MaxPriorityQueue`. This is the
+	Gets the priority of the last value in the `MinPriorityQueue`. This is the
 	value that will be removed first.
 	@return number?
 ]=]
-function MaxPriorityQueue:GetLastPriority()
+function MinPriorityQueue:GetLastPriority()
 	local length = self.Length
 	return if length == 0 then nil else self.Array[length].Priority
 end
 
 --[=[
-	Pops an element from the `MaxPriorityQueue`. This removes the last element
+	Pops an element from the `MinPriorityQueue`. This removes the last element
 	in the array.
 
 	@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
@@ -329,13 +330,13 @@ end
 	@param onlyValue? boolean -- Whether or not to return the value of the element.
 	@return HeapEntry<T> | T | nil
 ]=]
-function MaxPriorityQueue:PopElement(onlyValue: boolean?)
+function MinPriorityQueue:PopElement(onlyValue: boolean?)
 	if IsUltraStrictMode() then
 		local typeSuccess, typeError = IsMaybeBoolean:matches(onlyValue)
 		if not typeSuccess then
 			local exception = Error.new(tostring(typeError))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.PopElement)
+			Error.captureStackTrace(exception, MinPriorityQueue.PopElement)
 			error(exception)
 		end
 	end
@@ -357,17 +358,17 @@ function MaxPriorityQueue:PopElement(onlyValue: boolean?)
 end
 
 --[=[
-	Removes an element from the `MaxPriorityQueue` with a specific priority.
+	Removes an element from the `MinPriorityQueue` with a specific priority.
 	@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
 	@param priority number -- The priority of the element to remove.
 ]=]
-function MaxPriorityQueue:RemovePriority(priority)
+function MinPriorityQueue:RemovePriority(priority)
 	if IsUltraStrictMode() then
 		local typeSuccess, typeError = IsNumber:matches(priority)
 		if not typeSuccess then
 			local exception = Error.new(tostring(typeError))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.RemovePriority)
+			Error.captureStackTrace(exception, MinPriorityQueue.RemovePriority)
 			error(exception)
 		end
 	end
@@ -385,7 +386,7 @@ function MaxPriorityQueue:RemovePriority(priority)
 end
 
 --[=[
-	Removes an element from the `MaxPriorityQueue` with a specific value.
+	Removes an element from the `MinPriorityQueue` with a specific value.
 
 	:::warning Time Complexity
 	This function does _NOT_ use the binary search algorithm. It is uses a
@@ -398,20 +399,20 @@ end
 	@param value T -- The value of the element to remove.
 	@param equalityCheck? ComparisonFunction<T> -- The function used to check if two values are equal. If unprovided, we'll default to `==`.
 ]=]
-function MaxPriorityQueue:RemoveValue(value, equalityCheck)
+function MinPriorityQueue:RemoveValue(value, equalityCheck)
 	if IsUltraStrictMode() then
 		local typeSuccess0, typeError0 = IsUnknown:matches(value)
 		if not typeSuccess0 then
 			local exception = Error.new(tostring(typeError0))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.RemoveValue)
+			Error.captureStackTrace(exception, MinPriorityQueue.RemoveValue)
 			error(exception)
 		end
 		local typeSuccess1, typeError1 = IsMaybeFunction:matches(equalityCheck)
 		if not typeSuccess1 then
 			local exception = Error.new(tostring(typeError1))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.RemoveValue)
+			Error.captureStackTrace(exception, MinPriorityQueue.RemoveValue)
 			error(exception)
 		end
 	end
@@ -437,17 +438,17 @@ function MaxPriorityQueue:RemoveValue(value, equalityCheck)
 end
 
 --[=[
-	Clears the entire `MaxPriorityQueue`.
-	@return MaxPriorityQueue<T>
+	Clears the entire `MinPriorityQueue`.
+	@return MinPriorityQueue<T>
 ]=]
-function MaxPriorityQueue:Clear()
+function MinPriorityQueue:Clear()
 	table.clear(self.Array)
 	self.Length = 0
 	return self
 end
 
 --[=[
-	Checks if the `MaxPriorityQueue` contains a specific value.
+	Checks if the `MinPriorityQueue` contains a specific value.
 
 	:::warning Time Complexity
 	This function does _NOT_ use the binary search algorithm. It is uses a
@@ -461,20 +462,20 @@ end
 	@param equalityCheck? ComparisonFunction<T> -- The function used to check if two values are equal. If unprovided, we'll default to `==`.
 	@return boolean
 ]=]
-function MaxPriorityQueue:Contains(value, equalityCheck)
+function MinPriorityQueue:Contains(value, equalityCheck)
 	if IsUltraStrictMode() then
 		local typeSuccess0, typeError0 = IsUnknown:matches(value)
 		if not typeSuccess0 then
 			local exception = Error.new(tostring(typeError0))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.Contains)
+			Error.captureStackTrace(exception, MinPriorityQueue.Contains)
 			error(exception)
 		end
 		local typeSuccess1, typeError1 = IsMaybeFunction:matches(equalityCheck)
 		if not typeSuccess1 then
 			local exception = Error.new(tostring(typeError1))
 			exception.name = "DebugTypeError"
-			Error.captureStackTrace(exception, MaxPriorityQueue.Contains)
+			Error.captureStackTrace(exception, MinPriorityQueue.Contains)
 			error(exception)
 		end
 	end
@@ -506,7 +507,7 @@ function Private:__tostring()
 	for index, value in array do
 		stringBuilder[index] = `\t\{Priority: {value.Priority}, Value = {value.Value}};`
 	end
-	return `MaxPriorityQueue<[\n{table.concat(stringBuilder, "\n")}\n]>`
+	return `MinPriorityQueue<[\n{table.concat(stringBuilder, "\n")}\n]>`
 end
 
-return table.freeze(MaxPriorityQueue :: Static)
+return table.freeze(MinPriorityQueue :: Static)

@@ -5,8 +5,6 @@
 	args = "[-d, --debug] [rojo-path]"
 ]=]
 
-local DateTime = require("@contexts/DateTime")
-local Debug = require("@contexts/Debug")
 local LuauPolyfill = require("@packages/LuauPolyfill")
 local PathFileSystem = require("@packages/PathFileSystem")
 local ReducedInstance = require("@utilities/ReducedInstance")
@@ -17,6 +15,10 @@ local process = require("@lune/process")
 local roblox = require("@lune/roblox")
 local serde = require("@lune/serde")
 local task = require("@lune/task")
+
+local DateTime = require("@contexts/DateTime")
+local Debug = require("@contexts/Debug")
+local Random = require("@contexts/Random")
 
 local Path = PathFileSystem.Path
 local console = LuauPolyfill.console
@@ -164,13 +166,14 @@ local function LoadScript(script: roblox.Instance): (((...any) -> ...any)?, stri
 	local callableFunction = luau.load(bytecode, {
 		debugName = script:GetFullName();
 		environment = setmetatable({
-			game = gameWithContext;
-			script = script;
-			require = RequireModule;
-			tick = os.clock;
-			task = task;
 			DateTime = DateTime;
 			debug = Debug;
+			game = gameWithContext;
+			Random = Random;
+			require = RequireModule;
+			script = script;
+			task = task;
+			tick = os.clock;
 		}, {__index = roblox}) :: any;
 	})
 

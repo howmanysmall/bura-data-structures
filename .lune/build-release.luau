@@ -177,6 +177,7 @@ local function CreateBuildProject(): Cleanup
 		end
 	end
 
+	-- here is some of the worst code of all time
 	if INCLUDE_PACKAGES then
 		local packageNames: {[string]: string} = {}
 		for _, child in packages:GetChildren() do

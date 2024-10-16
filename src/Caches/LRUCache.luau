@@ -351,7 +351,7 @@ end
 	@param key K -- The key to set the value to.
 	@param value V -- The value to set.
 ]=]
-function Private:Set<K, V>(key, value)
+function Private:Set(key, value)
 	if IsUltraStrictMode() then
 		local typeSuccess0, typeError0 = IsUnknown:matches(key)
 		if not typeSuccess0 then
