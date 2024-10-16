@@ -19,6 +19,7 @@ local task = require("@lune/task")
 local DateTime = require("@contexts/DateTime")
 local Debug = require("@contexts/Debug")
 local Random = require("@contexts/Random")
+local Utf8 = require("@contexts/Utf8")
 
 local Path = PathFileSystem.Path
 local console = LuauPolyfill.console
@@ -174,6 +175,7 @@ local function LoadScript(script: roblox.Instance): (((...any) -> ...any)?, stri
 			script = script;
 			task = task;
 			tick = os.clock;
+			utf8 = Utf8;
 		}, {__index = roblox}) :: any;
 	})
 

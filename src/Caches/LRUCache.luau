@@ -122,7 +122,7 @@ type PrivateStatic = Static & {
 			- `key` (K): The key to look up.
 		- **Returns:** The value associated with the key, or `nil` if not found.
 
-	- **`LRUCache:Set(key: K, value: V): ()`**
+	- **`LRUCache:Set(key: K, value: V): void`**
 		- Adds or updates a key-value pair in the cache.
 		- If the key already exists, its value is updated, and it is marked as
 		  recently used.
@@ -132,10 +132,11 @@ type PrivateStatic = Static & {
 			- `key` (K): The key to insert or update.
 			- `value` (V): The value to associate with the key.
 
-	- **`LRUCache:Clear(): ()`**
+	- **`LRUCache:Clear(): void`**
 		- Removes all items from the cache.
 
 	### Properties:
+
 	- **`LRUCache.Capacity: number`** (read-only)
 		- The maximum number of items the cache can hold.
 
