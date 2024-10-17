@@ -26,5 +26,5 @@ Using the RepoToRoblox plugin is the easiest way to install in Studio.
 
 ```toml
 [dependencies]
-DataStructures = "bura-games/data-structures@^0.1.0"
+DataStructures = "bura-games/data-structures@^1.0.0"
 ```
