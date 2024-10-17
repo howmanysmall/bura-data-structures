@@ -4,11 +4,10 @@ description = "A collection of data structures aimed specifically at Roblox game
 exclude = ["**"]
 include = ["src", "src/**", "wally.toml", "wally.lock", "default.project.json", "LICENSE"]
 license = "MIT"
-name = "howmanysmall/data-structures"
-private = true
+name = "howmanysmall/bura-data-structures"
 realm = "shared"
 registry = "https://github.com/UpliftGames/wally-index"
-version = "0.1.0"
+version = "1.0.0"
 
 [dependencies]
 Error = "howmanysmall/error@1.1.0"
