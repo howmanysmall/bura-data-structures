@@ -1,10 +1,10 @@
 autoSectionPath = "src"
-baseUrl = "/data-structures"
 changelog = true
 gitSourceBranch = "main"
 title = "Data Structures"
 
 [docusaurus]
+baseUrl = "/data-structures"
 tagline = "A collection of data structures aimed specifically at Roblox game development."
 
 # [[navbar.items]]
