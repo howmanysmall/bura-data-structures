@@ -1,4 +1,5 @@
 autoSectionPath = "src"
+baseUrl = "/data-structures"
 changelog = true
 gitSourceBranch = "main"
 title = "Data Structures"
