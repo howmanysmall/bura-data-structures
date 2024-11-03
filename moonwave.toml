@@ -7,6 +7,10 @@ title = "Data Structures"
 baseUrl = "/data-structures"
 tagline = "A collection of data structures aimed specifically at Roblox game development."
 
+[navbar.logo]
+alt = "Bura Logo"
+src = "bura-logo.webp"
+
 # [[navbar.items]]
 
 [home]
