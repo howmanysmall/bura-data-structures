@@ -7,7 +7,7 @@ license = "MIT"
 name = "howmanysmall/bura-data-structures"
 realm = "shared"
 registry = "https://github.com/UpliftGames/wally-index"
-version = "1.0.1"
+version = "1.0.0"
 
 [dependencies]
 Error = "howmanysmall/error@1.1.0"
