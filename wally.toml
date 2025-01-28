@@ -7,12 +7,12 @@ license = "MIT"
 name = "howmanysmall/bura-data-structures"
 realm = "shared"
 registry = "https://github.com/UpliftGames/wally-index"
-version = "1.0.0"
+version = "1.0.1"
 
 [dependencies]
 Error = "howmanysmall/error@1.1.0"
-GreenTea = "corecii/greentea@0.4.9"
-GreenTeaUtilities = "howmanysmall/greentea-utilities@1.5.0"
+GreenTea = "corecii/greentea@0.4.11"
+GreenTeaUtilities = "howmanysmall/greentea-utilities@1.6.0"
 
 [dev-dependencies]
 Jest = "jsdotlua/jest@3.6.1-rc.2"

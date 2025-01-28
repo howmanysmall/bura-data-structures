@@ -10,74 +10,71 @@ local Types = require(script.Parent.Parent.Types)
 
 type ComparisonFunction<T> = Types.ComparisonFunction<T>
 
-export type SortedArray<T> = typeof(setmetatable(
-	{} :: {
-		Array: {T},
-		Comparison: ComparisonFunction<T>?,
+export type SortedArray<T> = typeof(setmetatable({} :: {
+	Array: {T},
+	Comparison: ComparisonFunction<T>?,
 
-		-- add when luau sucks less
-		-- Map: <U>(self: SortedArray<T>, callback: (value: T, index: number, array: {T}) -> U, comparison: ComparisonFunction<T>?) -> SortedArray<U>,
-		-- MapFiltered: <U>(self: SortedArray<T>, callback: (value: T, index: number, array: {T}) -> U, comparison: ComparisonFunction<T>?) -> SortedArray<U>, -- NonNullable<U>
+	-- add when luau sucks less
+	-- Map: <U>(self: SortedArray<T>, callback: (value: T, index: number, array: {T}) -> U, comparison: ComparisonFunction<T>?) -> SortedArray<U>,
+	-- MapFiltered: <U>(self: SortedArray<T>, callback: (value: T, index: number, array: {T}) -> U, comparison: ComparisonFunction<T>?) -> SortedArray<U>, -- NonNullable<U>
 
-		Insert: (self: SortedArray<T>, value: T) -> number,
+	Insert: (self: SortedArray<T>, value: T) -> number,
 
-		Find: (
-			self: SortedArray<T>,
-			value: T,
-			equalityCheck: ComparisonFunction<T>?,
-			lessThan: ComparisonFunction<T>?,
-			low: number?,
-			high: number?
-		) -> number?,
-		IndexOf: (
-			self: SortedArray<T>,
-			value: T,
-			equalityCheck: ComparisonFunction<T>?,
-			lessThan: ComparisonFunction<T>?,
-			low: number?,
-			high: number?
-		) -> number?,
+	Find: (
+		self: SortedArray<T>,
+		value: T,
+		equalityCheck: ComparisonFunction<T>?,
+		lessThan: ComparisonFunction<T>?,
+		low: number?,
+		high: number?
+	) -> number?,
+	IndexOf: (
+		self: SortedArray<T>,
+		value: T,
+		equalityCheck: ComparisonFunction<T>?,
+		lessThan: ComparisonFunction<T>?,
+		low: number?,
+		high: number?
+	) -> number?,
 
-		Copy: (self: SortedArray<T>) -> {T},
-		CopyDeep: (self: SortedArray<T>) -> {T},
+	Copy: (self: SortedArray<T>) -> {T},
+	CopyDeep: (self: SortedArray<T>) -> {T},
 
-		Clone: (self: SortedArray<T>) -> SortedArray<T>,
-		CloneDeep: (self: SortedArray<T>) -> SortedArray<T>,
+	Clone: (self: SortedArray<T>) -> SortedArray<T>,
+	CloneDeep: (self: SortedArray<T>) -> SortedArray<T>,
 
-		RemoveElement: (
-			self: SortedArray<T>,
-			signature: T,
-			equalityCheck: ComparisonFunction<T>?,
-			lessThan: ComparisonFunction<T>?
-		) -> T?,
+	RemoveElement: (
+		self: SortedArray<T>,
+		signature: T,
+		equalityCheck: ComparisonFunction<T>?,
+		lessThan: ComparisonFunction<T>?
+	) -> T?,
 
-		RemoveIndex: (self: SortedArray<T>, index: number) -> T?,
-		Pop: (self: SortedArray<T>) -> T?,
-		Shift: (self: SortedArray<T>) -> T?,
+	RemoveIndex: (self: SortedArray<T>, index: number) -> T?,
+	Pop: (self: SortedArray<T>) -> T?,
+	Shift: (self: SortedArray<T>) -> T?,
 
-		Sort: (self: SortedArray<T>) -> SortedArray<T>,
-		SortIndex: (self: SortedArray<T>, index: number) -> number,
-		SortElement: (
-			self: SortedArray<T>,
-			element: T,
-			equalityCheck: ComparisonFunction<T>?,
-			lessThan: ComparisonFunction<T>?
-		) -> number,
+	Sort: (self: SortedArray<T>) -> SortedArray<T>,
+	SortIndex: (self: SortedArray<T>, index: number) -> number,
+	SortElement: (
+		self: SortedArray<T>,
+		element: T,
+		equalityCheck: ComparisonFunction<T>?,
+		lessThan: ComparisonFunction<T>?
+	) -> number,
 
-		GetIntersection: (
-			self: SortedArray<T>,
-			other: SortedArray<T>,
-			equalityCheck: ComparisonFunction<T>?,
-			lessThan: ComparisonFunction<T>?
-		) -> SortedArray<T>,
+	GetIntersection: (
+		self: SortedArray<T>,
+		other: SortedArray<T>,
+		equalityCheck: ComparisonFunction<T>?,
+		lessThan: ComparisonFunction<T>?
+	) -> SortedArray<T>,
 
-		IsEmpty: (self: SortedArray<T>) -> boolean,
-	},
-	{} :: {
-		__len: (self: SortedArray<T>) -> number,
-		__tostring: (self: SortedArray<T>) -> string,
-	}
-))
+	IsEmpty: (self: SortedArray<T>) -> boolean,
+}, {} :: {
+	__len: (self: SortedArray<T>) -> number,
+	__tostring: (self: SortedArray<T>) -> string,
+}))
 
 type Static = {
 	ClassName: "SortedArray",
@@ -314,13 +311,14 @@ local function Insert<T>(self: SortedArray<T>, value: T): number
 	end
 
 	local array = self.Array
-	local position = FindClosest(array, value, 1, #array)
+	local comparison = self.Comparison
+
+	local position = FindClosest(array, value, 1, #array, nil, comparison)
 
 	local insertAt = 1
 	local value2 = array[position :: never]
 
 	if value2 ~= nil then
-		local comparison = self.Comparison
 		local boolean = if comparison then comparison(value, value2) else (value :: never) < value2
 		insertAt = if boolean then position :: number else (position :: number) + 1
 	end
