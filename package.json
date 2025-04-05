@@ -2,7 +2,8 @@
 	"name": "bura-data-structures",
 	"private": true,
 	"scripts": {
-		"moonwave:dev": "NODE_OPTIONS='--no-experimental-require-module' moonwave dev"
+		"moonwave:dev": "NODE_OPTIONS='--no-experimental-require-module' moonwave dev",
+		"moonwave:publish": "NODE_OPTIONS='--no-experimental-require-module' moonwave build --publish"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
