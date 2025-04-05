@@ -10,16 +10,68 @@ local Types = require(script.Parent.Parent.Types)
 
 type ComparisonFunction<T> = Types.ComparisonFunction<T>
 
+--[=[
+	@class SortedArrayType
+	@ignore
+]=]
+
 export type SortedArray<T> = typeof(setmetatable({} :: {
+	--[=[
+		The actual array of data. You can iterate over this or index it.
+
+		:::warning Readonly
+		_PLEASE_ treat this array as readonly. Do not mutate it directly.
+		:::
+
+		@readonly
+		@prop Array ReadonlyArray<T>
+		@within SortedArrayType
+	]=]
 	Array: {T},
+
+	--[=[
+		The comparison function of the `SortedArray`.
+
+		@readonly
+		@prop Comparison ComparisonFunction<T>?
+		@within SortedArrayType
+	]=]
 	Comparison: ComparisonFunction<T>?,
 
 	-- add when luau sucks less
 	-- Map: <U>(self: SortedArray<T>, callback: (value: T, index: number, array: {T}) -> U, comparison: ComparisonFunction<T>?) -> SortedArray<U>,
 	-- MapFiltered: <U>(self: SortedArray<T>, callback: (value: T, index: number, array: {T}) -> U, comparison: ComparisonFunction<T>?) -> SortedArray<U>, -- NonNullable<U>
 
+	--[=[
+		Inserts an element in the proper place which would preserve the array's
+		sorted order. Returns the index the element was inserted.
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@method Insert
+		@within SortedArrayType
+
+		@param value T -- The value you want to insert.
+		@return integer -- The index at which it was inserted.
+	]=]
 	Insert: (self: SortedArray<T>, value: T) -> number,
 
+	--[=[
+		Finds an element in a `SortedArray` and returns its position (or `nil` if
+		non-existent).
+
+		@method Find
+		@within SortedArrayType
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@param value T -- The value you want to find.
+		@param equalityCheck? ComparisonFunction<T> -- An optional function which checks for equality between the passed-in element and the other elements in the SortedArray.
+		@param lessThan? ComparisonFunction<T> -- An optional less-than comparison function, which falls back on the comparison passed in from [SortedArray.new].
+		@param low? integer -- An optional lower bound for the search. Defaults to `1`.
+		@param high? integer -- An optional upper bound for the search. Defaults to the length of the SortedArray.
+		@return integer? -- The index of the element, or `nil` if it doesn't exist.
+	]=]
 	Find: (
 		self: SortedArray<T>,
 		value: T,
@@ -28,6 +80,21 @@ export type SortedArray<T> = typeof(setmetatable({} :: {
 		low: number?,
 		high: number?
 	) -> number?,
+	--[=[
+		An alias for `SortedArray.Find`.
+
+		@method IndexOf
+		@within SortedArrayType
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@param value T -- The value you want to find.
+		@param equalityCheck? ComparisonFunction<T> -- An optional function which checks for equality between the passed-in element and the other elements in the SortedArray.
+		@param lessThan? ComparisonFunction<T> -- An optional less-than comparison function, which falls back on the comparison passed in from [SortedArray.new].
+		@param low? integer -- An optional lower bound for the search. Defaults to `1`.
+		@param high? integer -- An optional upper bound for the search. Defaults to the length of the SortedArray.
+		@return integer? -- The index of the element, or `nil` if it doesn't exist.
+	]=]
 	IndexOf: (
 		self: SortedArray<T>,
 		value: T,
@@ -37,12 +104,63 @@ export type SortedArray<T> = typeof(setmetatable({} :: {
 		high: number?
 	) -> number?,
 
+	--[=[
+		Makes a shallow copy of the `SortedArray`'s array.
+		@method Copy
+		@within SortedArrayType
+		@return {T} -- A shallow copy of the data.
+	]=]
 	Copy: (self: SortedArray<T>) -> {T},
+	--[=[
+		Makes a deep copy of the SortedArray's array.
+		@method CopyDeep
+		@within SortedArrayType
+		@return {T} -- A deep copy of the data.
+	]=]
 	CopyDeep: (self: SortedArray<T>) -> {T},
 
+	--[=[
+		Makes a shallow copy of the `SortedArray` and returns a new `SortedArray`.
+		Probably would recommend `SortedArray.CloneDeep` instead because of
+		funny cache misses.
+
+		@method Clone
+		@within SortedArrayType
+
+		@return SortedArray<T> -- A shallow copy of the `SortedArray`.
+	]=]
 	Clone: (self: SortedArray<T>) -> SortedArray<T>,
+	--[=[
+		Makes a deep copy of the `SortedArray` and returns a new `SortedArray`.
+		@method CloneDeep
+		@within SortedArrayType
+		@return SortedArray<T> -- A deep copy of the `SortedArray`.
+	]=]
 	CloneDeep: (self: SortedArray<T>) -> SortedArray<T>,
 
+	--[=[
+		Clears the `SortedArray`.
+		@method Clear
+		@within SortedArrayType
+		@return SortedArray<T>
+	]=]
+	Clear: (self: SortedArray<T>) -> SortedArray<T>,
+
+	--[=[
+		Searches the array via `SortedArray.Find`. If found, it removes the value
+		and returns the value, otherwise returns undefined. Only removes a single
+		occurrence.
+
+		@method RemoveElement
+		@within SortedArrayType
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@param signature T -- The value you want to remove.
+		@param equalityCheck? ComparisonFunction<T> -- An optional function which checks for equality between the passed-in element and the other elements in the SortedArray.
+		@param lessThan? ComparisonFunction<T> -- An optional less-than comparison function, which falls back on the comparison passed in from [SortedArray.new].
+		@return T? -- The removed value.
+	]=]
 	RemoveElement: (
 		self: SortedArray<T>,
 		signature: T,
@@ -50,12 +168,74 @@ export type SortedArray<T> = typeof(setmetatable({} :: {
 		lessThan: ComparisonFunction<T>?
 	) -> T?,
 
+	--[=[
+		Removes an element from the `SortedArray` by index. Returns the removed
+		element. This is literally just `table.remove`.
+
+		@method RemoveIndex
+		@within SortedArrayType
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@param index integer -- The index of the element to remove.
+		@return T? -- The removed element.
+	]=]
 	RemoveIndex: (self: SortedArray<T>, index: number) -> T?,
+	--[=[
+		Pops an element from the `SortedArray`. This just removes the last element.
+		@method Pop
+		@within SortedArrayType
+		@return T? -- The removed element.
+	]=]
 	Pop: (self: SortedArray<T>) -> T?,
+
+	--[=[
+		Shifts element from the `SortedArray`. This just removes the first element.
+		@method Shift
+		@within SortedArrayType
+		@return T? -- The removed element.
+	]=]
 	Shift: (self: SortedArray<T>) -> T?,
 
+	--[=[
+		Does `table.sort` on the `SortedArray`'s array. Pretty useless.
+		@method Sort
+		@within SortedArrayType
+		@return SortedArray<T>
+	]=]
 	Sort: (self: SortedArray<T>) -> SortedArray<T>,
+	--[=[
+		Removes the value at `index` and re-inserts it. This is useful for when a
+		value may have updated in a way that could change it's position in a
+		`SortedArray`. Returns the new position of the element.
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+		@error ElementNotFoundError -- Thrown when the element you are trying to sort is not found.
+
+		@method SortIndex
+		@within SortedArrayType
+
+		@param index integer -- The index of the element to sort.
+		@return integer -- The new position of the element.
+	]=]
 	SortIndex: (self: SortedArray<T>, index: number) -> number,
+	--[=[
+		Calls `SortedArray.RemoveElement(signature, equalityCheck, lessThan)` and
+		re-inserts the value. This is useful for when a value may have updated in a
+		way that could change it's position in a `SortedArray`. Returns the new
+		position of the element.
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+		@error ElementNotFoundError -- Thrown when the element you are trying to sort is not found.
+
+		@method SortElement
+		@within SortedArrayType
+
+		@param signature T -- The value you want to remove.
+		@param equalityCheck? ComparisonFunction<T> -- An optional function which checks for equality between the passed-in element and the other elements in the SortedArray.
+		@param lessThan? ComparisonFunction<T> -- An optional less-than comparison function, which falls back on the comparison passed in from [SortedArray.new].
+		@return integer -- The new position of the element.
+	]=]
 	SortElement: (
 		self: SortedArray<T>,
 		element: T,
@@ -63,6 +243,19 @@ export type SortedArray<T> = typeof(setmetatable({} :: {
 		lessThan: ComparisonFunction<T>?
 	) -> number,
 
+	--[=[
+		Gets an intersection between two `SortedArray`s.
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@method GetIntersection
+		@within SortedArrayType
+
+		@param other SortedArray<T> -- The other `SortedArray` to get the intersection with.
+		@param equalityCheck? ComparisonFunction<T> -- An optional function which checks for equality between the passed-in element and the other elements in the `SortedArray`.
+		@param lessThan? ComparisonFunction<T> -- An optional less-than comparison function, which falls back on the comparison passed in from `SortedArray.new`.
+		@return SortedArray<T> -- The intersection of the two `SortedArray`s. This is a new `SortedArray`.
+	]=]
 	GetIntersection: (
 		self: SortedArray<T>,
 		other: SortedArray<T>,
@@ -70,6 +263,12 @@ export type SortedArray<T> = typeof(setmetatable({} :: {
 		lessThan: ComparisonFunction<T>?
 	) -> SortedArray<T>,
 
+	--[=[
+		Checks if the `SortedArray` is empty.
+		@method IsEmpty
+		@within SortedArrayType
+		@return boolean
+	]=]
 	IsEmpty: (self: SortedArray<T>) -> boolean,
 }, {} :: {
 	__len: (self: SortedArray<T>) -> number,
@@ -78,8 +277,47 @@ export type SortedArray<T> = typeof(setmetatable({} :: {
 
 type Static = {
 	ClassName: "SortedArray",
+	--[=[
+		Instantiates and returns a new `SortedArray`, with optional parameters.
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@function new
+		@within SortedArrayType
+
+		@param baseArray? {T} -- An array of data which will be sorted upon instantiation. If this is omitted, an empty array is used.
+		@param comparison? ComparisonFunction<T> -- An optional comparison function which is used to customize the element sorting, which will be given two elements `a` and `b` from the array as parameters. The function should return a boolean value specifying whether the first argument should be before the second argument in the sequence. If no comparison function is passed, the Luau-default `a < b` sorting is used.
+		@return SortedArray<T>
+	]=]
 	new: <T>(baseArray: {T}?, comparison: ComparisonFunction<T>?) -> SortedArray<T>,
+
+	--[=[
+		Checks if `value` is literally a `SortedArray`.
+
+		```lua
+		SortedArray.Is(SortedArray.new()) -- true
+		SortedArray.Is(SortedArray) -- false
+		SortedArray.Is({}) -- false
+		SortedArray.Is(nil) -- false
+		SortedArray.Is(1) -- false
+		```
+
+		@function Is
+		@within SortedArrayType
+
+		@param value unknown
+		@return boolean
+	]=]
 	Is: (value: any) -> boolean,
+	--[=[
+		An alias for `SortedArray.Is`.
+
+		@function instanceof
+		@within SortedArrayType
+
+		@param value unknown
+		@return boolean
+	]=]
 	instanceof: (value: any) -> boolean,
 }
 type PrivateStatic = Static & {
@@ -441,13 +679,13 @@ function SortedArray:Copy()
 end
 
 local function CopyDeep<T>(object: T): T
-	local new = table.clone(object :: never)
-	for index, value in next, object :: never do
+	local new = table.clone(object :: any)
+	for index, value in pairs(object :: any) do
 		if type(value) == "table" then
 			new[index] = CopyDeep(value)
 		end
 	end
-	return new :: never
+	return new :: any
 end
 
 --[=[
@@ -462,7 +700,7 @@ end
 	Makes a shallow copy of the SortedArray and returns a new SortedArray.
 	Probably would recommend [SortedArray.CloneDeep] instead because of
 	funny cache misses.
-	
+
 	@return SortedArray<T> -- A shallow copy of the SortedArray.
 ]=]
 function SortedArray:Clone()
@@ -475,6 +713,16 @@ end
 ]=]
 function SortedArray:CloneDeep()
 	return SortedArray.new(CopyDeep(self.Array), self.Comparison):Sort()
+end
+
+--[=[
+	Clears the SortedArray.
+	@since v1.1.0
+	@return SortedArray<T>
+]=]
+function SortedArray:Clear()
+	table.clear(self.Array)
+	return self
 end
 
 local function RemoveElement<T>(

@@ -1,0 +1,13 @@
+{
+	"name": "bura-data-structures",
+	"private": true,
+	"scripts": {
+		"moonwave:dev": "NODE_OPTIONS='--no-experimental-require-module' moonwave dev"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"concurrently": "^9.1.2",
+		"moonwave": "^1.3.0",
+		"rimraf": "^6.0.1"
+	}
+}

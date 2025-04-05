@@ -12,43 +12,120 @@ type Node<K, V> = {
 	Value: V,
 }
 
-export type LRUCache<K, V> = typeof(setmetatable(
-	{} :: {
-		Capacity: number,
-		Size: number,
+--[=[
+	@class LRUCacheType
+	@ignore
+]=]
 
-		Clear: (self: LRUCache<K, V>) -> (),
-		Get: (self: LRUCache<K, V>, key: K) -> V?,
-		Set: (self: LRUCache<K, V>, key: K, value: V) -> (),
-	},
-	{} :: {
-		__len: (self: LRUCache<K, V>) -> number,
-		__tostring: (self: LRUCache<K, V>) -> string,
-	}
-))
-type Private<K, V> = typeof(setmetatable(
-	{} :: {
-		Capacity: number,
-		Size: number,
+export type LRUCache<K, V> = typeof(setmetatable({} :: {
+	--[=[
+		The maximum number of items the cache can hold.
+		@prop Capacity integer
+		@readonly
+		@within LRUCacheType
+	]=]
+	Capacity: number,
+	--[=[
+		The current number of items in the cache.
+		@prop Size integer
+		@readonly
+		@within LRUCacheType
+	]=]
+	Size: number,
 
-		Clear: (self: Private<K, V>) -> (),
-		Get: (self: Private<K, V>, key: K) -> V?,
-		Set: (self: Private<K, V>, key: K, value: V) -> (),
+	--[=[
+		Clears the cache.
 
-		Head: Node<K, V>,
-		NodesMap: {[K]: Node<K, V>},
-		Tail: Node<K, V>,
-	},
-	{} :: {
-		__len: (self: Private<K, V>) -> number,
-		__tostring: (self: Private<K, V>) -> string,
-	}
-))
+		@method Clear
+		@within LRUCacheType
+	]=]
+	Clear: (self: LRUCache<K, V>) -> (),
+	--[=[
+		Gets the value associated with the given key.
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@method Get
+		@within LRUCacheType
+
+		@param key K -- The key to get the value for.
+		@return V?
+	]=]
+	Get: (self: LRUCache<K, V>, key: K) -> V?,
+
+	--[=[
+		Sets the value to the given key.
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@method Set
+		@within LRUCacheType
+
+		@param key K -- The key to set the value to.
+		@param value V -- The value to set.
+	]=]
+	Set: (self: LRUCache<K, V>, key: K, value: V) -> (),
+}, {} :: {
+	__len: (self: LRUCache<K, V>) -> number,
+	__tostring: (self: LRUCache<K, V>) -> string,
+}))
+type Private<K, V> = typeof(setmetatable({} :: {
+	Capacity: number,
+	Size: number,
+
+	Clear: (self: Private<K, V>) -> (),
+	Get: (self: Private<K, V>, key: K) -> V?,
+	Set: (self: Private<K, V>, key: K, value: V) -> (),
+
+	Head: Node<K, V>,
+	NodesMap: {[K]: Node<K, V>},
+	Tail: Node<K, V>,
+}, {} :: {
+	__len: (self: Private<K, V>) -> number,
+	__tostring: (self: Private<K, V>) -> string,
+}))
 
 type Static = {
 	ClassName: "LRUCache",
+	--[=[
+		Creates a new LRU cache.
+
+		@function new
+		@within LRUCacheType
+
+		@error DebugTypeError -- Thrown when you are using debug mode and you pass an incorrect type.
+
+		@param capacity number -- The maximum number of items the cache can hold.
+		@return LRUCache<K, V>
+	]=]
 	new: <K, V>(capacity: number) -> LRUCache<K, V>,
+	--[=[
+		Checks if `value` is literally an `LRUCache`.
+
+		```lua
+		LRUCache.Is(LRUCache.new(10)) -- true
+		LRUCache.Is(LRUCache) -- false
+		LRUCache.Is({}) -- false
+		LRUCache.Is(nil) -- false
+		LRUCache.Is(1) -- false
+		```
+
+		@function Is
+		@within LRUCacheType
+
+		@param value unknown
+		@return boolean
+	]=]
 	Is: (value: any) -> boolean,
+	--[=[
+		An alias for `LRUCache.Is`.
+
+		@function instanceof
+		@within LRUCacheType
+
+		@param value unknown
+		@return boolean
+	]=]
 	instanceof: (value: any) -> boolean,
 }
 type PrivateStatic = Static & {
